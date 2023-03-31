@@ -1,12 +1,34 @@
 <script>
-  import { onMount } from "svelte";
+  // @ts-nocheck
 
-  let gameSpeed = 200;
+  import { onMount } from "svelte";
+  import Canvas from "./components/Canvas.svelte";
+
+  let canvas;
+
+  let gameConfig = {
+    width: 400, // canvas width
+    height: 420, // canvas height
+    fps: 10, // frames per second (canvas update)
+    colors: {
+      bg: "#112222",
+      main: "#203e4a",
+      light: "#4e94b0",
+    },
+  };
+
+  let gameState = {
+    snake: [
+      { x: 200, y: 210 },
+      { x: 190, y: 210 },
+      { x: 180, y: 210 },
+      { x: 170, y: 210 },
+      { x: 160, y: 210 },
+    ],
+  };
+
   let score = 0;
 
-  const greenColor = "#112222";
-  const blueColor = "#203e4a";
-  const lightColor = "#4e94b0";
   let dx = 10;
   let dy = 0;
 
@@ -51,48 +73,29 @@
     }
   }
 
-  let canvas;
-  let context;
-  let snake = [
-    { x: 200, y: 200 },
-    { x: 190, y: 200 },
-    { x: 180, y: 200 },
-    { x: 170, y: 200 },
-    { x: 160, y: 200 },
-  ];
+  // function moveSnake() {
+  //   // Create the new Snake's head
+  //   const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+  //   // Add the new head to the beginning of snake body
+  //   snake.unshift(head);
+  //   const has_eaten_food = snake[0].x === food_x && snake[0].y === food_y;
+  //   if (has_eaten_food) {
+  //     // Increase score
+  //     score = score + 10;
+  //     // Generate new food location
+  //   } else {
+  //     // Remove the last part of snake body
+  //     snake.pop();
+  //   }
+  // }
 
-  const clearCanvas = (canvas, context) => {
-    context.fillStyle = greenColor;
-    context.strokeStyle = greenColor;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    context.strokeRect(0, 0, canvas.width, canvas.height);
+  const moveSnake = () => {
+    const head = {
+      x: gameState.snake[0].x + dx,
+      y: gameState.snake[0].y + dy,
+    };
+    gameState.snake = [head, ...gameState.snake.slice(0, -1)];
   };
-
-  const drawSnakePart = (snakePart) => {
-    context.fillStyle = lightColor;
-    // context.strokeStyle = blueColor;
-    context.fillRect(snakePart.x, snakePart.y, 10, 10);
-    context.strokeRect(snakePart.x, snakePart.y, 10, 10);
-  };
-
-  const drawSnake = () =>
-    snake.forEach((snakePart) => drawSnakePart(snakePart));
-
-  function moveSnake() {
-    // Create the new Snake's head
-    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-    // Add the new head to the beginning of snake body
-    snake.unshift(head);
-    const has_eaten_food = snake[0].x === food_x && snake[0].y === food_y;
-    if (has_eaten_food) {
-      // Increase score
-      score = score + 10;
-      // Generate new food location
-    } else {
-      // Remove the last part of snake body
-      snake.pop();
-    }
-  }
 
   function hasGameEnded() {
     for (let i = 4; i < snake.length; i++) {
@@ -125,24 +128,31 @@
     context.strokeRect(food_x, food_y, 10, 10);
   }
 
-  const run = (canvas, context) => {
-    if (hasGameEnded()) return;
+  // const run = (canvas, context) => {
+  //   if (hasGameEnded()) return;
 
-    changinDirecion = false;
-    setTimeout(() => {
-      clearCanvas(canvas, context);
-      drawFood();
+  //   changinDirecion = false;
+  //   setTimeout(() => {
+  //     clearCanvas(canvas, context);
+  //     drawFood();
+  //     moveSnake();
+  //     drawSnake();
+  //     run(canvas, context);
+  //   }, gameSpeed);
+  // };
+
+  const run = () => {
+    let interval = setInterval(() => {
       moveSnake();
-      drawSnake();
-      run(canvas, context);
-    }, gameSpeed);
+    }, 1000 / gameConfig.fps);
+
+    // clearInterval(interval)
   };
 
   onMount(() => {
-    document.addEventListener("keydown", change_direction);
-    context = canvas.getContext("2d");
-    run(canvas, context);
-    gen_food();
+    // document.addEventListener("keydown", change_direction);
+    run();
+    // gen_food();
   });
 </script>
 
@@ -152,7 +162,13 @@
       <p>Score: {score}</p>
       <p>High Score: 0</p>
     </div>
-    <canvas height="400px" width="400px" id="gameCanvas" bind:this={canvas} />
+    <Canvas
+      bind:canvas
+      width={gameConfig.width}
+      height={gameConfig.height}
+      colors={gameConfig.colors}
+      {gameState}
+    />
     <button class="replay-button" type="button">Play again</button>
     <p class="controls">
       Move with <span class="key">w</span>
@@ -197,10 +213,6 @@
   .replay-button:focus {
     outline: 2px solid var(--color-light);
     outline-offset: -6px;
-  }
-
-  canvas {
-    border: 4px solid var(--color-blue);
   }
 
   .wrapper {
