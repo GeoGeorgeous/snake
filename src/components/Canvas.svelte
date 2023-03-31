@@ -6,10 +6,11 @@
     export let width;
     export let height;
     export let canvas;
+    export let hasGameEnded;
     let context;
 
     const drawPart = (part) => {
-        context.fillStyle = colors.light;
+        context.fillStyle = hasGameEnded ? "red" : colors.light;
         context.strokeStyle = colors.main;
         context.fillRect(part.x, part.y, 10, 10);
         context.strokeRect(part.x, part.y, 10, 10);

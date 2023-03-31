@@ -8,6 +8,8 @@
   import { gameConfig } from "./lib/cfg";
 
   let canvas;
+  let hasGameEnded = false;
+  let runtime;
 
   let game = {
     snake: [
@@ -69,6 +71,7 @@
   };
 
   const reset = () => {
+    clearTimeout(runtime);
     // Reset all the game states
     game.snake = [
       { x: 200, y: 210 },
@@ -80,6 +83,7 @@
     directionChange = false;
     direction = "right";
     score = 0;
+    run();
   };
 
   $: {
@@ -104,11 +108,25 @@
     }
   }
 
-  const isGameEnded = false;
+  const checkGameStatus = () => {
+    for (let i = 4; i < game.snake.length; i++) {
+      if (
+        game.snake[i].x === game.snake[0].x &&
+        game.snake[i].y === game.snake[0].y
+      )
+        return true;
+    }
+    const hitLeftWall = game.snake[0].x <= 0;
+    const hitRightWall = game.snake[0].x + 10 >= gameConfig.width;
+    const hitTopWall = game.snake[0].y <= 0;
+    const hitBottomWall = game.snake[0].y + 10 >= gameConfig.height;
+    hasGameEnded = hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+  };
 
   const run = () => {
-    if (isGameEnded) return;
-    setTimeout(() => {
+    checkGameStatus();
+    if (hasGameEnded) return;
+    runtime = setTimeout(() => {
       moveSnake();
       directionChange = false;
       run();
@@ -132,12 +150,13 @@
       width={gameConfig.width}
       height={gameConfig.height}
       colors={gameConfig.colors}
+      {hasGameEnded}
       {game}
     />
     <Controls on:directionChange={handleDirectionChange} on:restart={reset} />
     <div class="controls" />
     <p class="controls__text">
-      Move with <span class="key">w</span>
+      Move with <span class="key">W</span>
       <span class="key">A</span>
       <span class="key">S</span>
       <span class="key">D</span> or <span class="key">ARROW KEYS</span>
@@ -165,13 +184,14 @@
   }
 
   p {
+    font-family: monospace;
     color: var(--color-light);
     text-align: center;
     font-size: 1.5rem;
   }
 
   .controls__text {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-bottom: 1.5rem;
   }
 
@@ -212,7 +232,8 @@
     outline: 1px solid var(--color-light);
     outline-offset: -4px;
     padding: 5px 10px;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
   }
 
   .controls {
