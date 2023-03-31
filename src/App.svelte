@@ -19,6 +19,7 @@
       { x: 170, y: 210 },
       { x: 160, y: 210 },
     ],
+    food: {},
   };
   let direction = "right";
   let directionChange = false;
@@ -68,7 +69,23 @@
       y: game.snake[0].y + dy,
     };
     game.snake = [head, ...game.snake.slice(0, -1)];
+    const hasEaten =
+      game.snake[0].x === game.food.x && game.snake[0].y === game.food.y;
+    if (hasEaten) generateFood();
   };
+
+  function randomFood(min, max) {
+    return Math.round((Math.random() * (max - min) + min) / 10) * 10;
+  }
+
+  function generateFood() {
+    game.food.x = randomFood(0, gameConfig.width - 10);
+    game.food.y = randomFood(0, gameConfig.height - 10);
+    game.snake.forEach(function hasSnakeEatenFood(part) {
+      const hasEaten = part.x == game.food.x && part.y == game.food.y;
+      if (hasEaten) generateFood();
+    });
+  }
 
   const reset = () => {
     clearTimeout(runtime);
@@ -80,6 +97,7 @@
       { x: 170, y: 210 },
       { x: 160, y: 210 },
     ];
+    game.food = {};
     directionChange = false;
     direction = "right";
     score = 0;
@@ -134,6 +152,7 @@
   };
 
   onMount(() => {
+    generateFood();
     run();
   });
 </script>

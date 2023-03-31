@@ -22,6 +22,12 @@
         });
     };
 
+    const drawFood = () => {
+        console.log(game.food.x, game.food.y);
+        context.fillStyle = colors.fruit;
+        context.fillRect(game.food.x, game.food.x, 10, 10);
+    };
+
     const clearCanvas = () => {
         context.fillStyle = colors.bg;
         context.strokeStyle = colors.bg;
@@ -30,8 +36,9 @@
     };
 
     const updateCanvas = () => {
-        clearCanvas(); // Clear frame
-        drawSnake(); // Draw new frame
+        clearCanvas();
+        if (game.food) drawFood();
+        drawSnake();
     };
 
     $: if (context && game) {
