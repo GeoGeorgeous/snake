@@ -1,23 +1,15 @@
 <script>
+  import { onMount } from "svelte";
+
   // @ts-nocheck
 
-  import { onMount } from "svelte";
   import Canvas from "./components/Canvas.svelte";
+  import Controls from "./components/Controls.svelte";
+  import { gameConfig } from "./lib/cfg";
 
   let canvas;
 
-  let gameConfig = {
-    width: 400, // canvas width
-    height: 420, // canvas height
-    fps: 10, // frames per second (canvas update)
-    colors: {
-      bg: "#112222",
-      main: "#203e4a",
-      light: "#4e94b0",
-    },
-  };
-
-  let gameState = {
+  let game = {
     snake: [
       { x: 200, y: 210 },
       { x: 190, y: 210 },
@@ -26,133 +18,105 @@
       { x: 160, y: 210 },
     ],
   };
-
+  let direction = "right";
+  let directionChange = false;
   let score = 0;
+  let dx;
+  let dy;
 
-  let dx = 10;
-  let dy = 0;
+  const handleDirectionChange = (event) => {
+    if (directionChange) return;
 
-  let food_x;
-  let food_y;
+    directionChange = true;
+    switch (event.detail) {
+      case "up":
+        if (direction !== "down") {
+          direction = "up";
+          dx = 0;
+          dy = -10;
+        }
+        break;
+      case "right":
+        if (direction !== "left") {
+          direction = "right";
+          dx = 10;
+          dy = 0;
+        }
+        break;
+      case "down":
+        if (direction !== "up") {
+          direction = "down";
+          dx = 0;
+          dy = 10;
+        }
+        break;
+      case "left":
+        if (direction !== "right") {
+          direction = "left";
+          dx = -10;
+          dy = 0;
+        }
+        break;
+    }
+  };
 
-  let changinDirecion = false;
+  const moveSnake = () => {
+    const head = {
+      x: game.snake[0].x + dx,
+      y: game.snake[0].y + dy,
+    };
+    game.snake = [head, ...game.snake.slice(0, -1)];
+  };
 
-  function change_direction(event) {
-    if (changinDirecion) return;
-    changinDirecion = true;
+  const reset = () => {
+    // Reset all the game states
+    game.snake = [
+      { x: 200, y: 210 },
+      { x: 190, y: 210 },
+      { x: 180, y: 210 },
+      { x: 170, y: 210 },
+      { x: 160, y: 210 },
+    ];
+    directionChange = false;
+    direction = "right";
+    score = 0;
+  };
 
-    const LEFT_KEY = 37;
-    const RIGHT_KEY = 39;
-    const UP_KEY = 38;
-    const DOWN_KEY = 40;
-
-    const keyPressed = event.keyCode;
-    const goingUp = dy === -10;
-    const goingDown = dy === 10;
-    const goingRight = dx === 10;
-    const goingLeft = dx === -10;
-
-    if (keyPressed === LEFT_KEY && !goingRight) {
+  $: {
+    if (direction === "left") {
       dx = -10;
       dy = 0;
     }
 
-    if (keyPressed === UP_KEY && !goingDown) {
+    if (direction === "up") {
       dx = 0;
       dy = -10;
     }
 
-    if (keyPressed === RIGHT_KEY && !goingLeft) {
+    if (direction === "right") {
       dx = 10;
       dy = 0;
     }
 
-    if (keyPressed === DOWN_KEY && !goingUp) {
+    if (direction === "down") {
       dx = 0;
       dy = 10;
     }
   }
 
-  // function moveSnake() {
-  //   // Create the new Snake's head
-  //   const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-  //   // Add the new head to the beginning of snake body
-  //   snake.unshift(head);
-  //   const has_eaten_food = snake[0].x === food_x && snake[0].y === food_y;
-  //   if (has_eaten_food) {
-  //     // Increase score
-  //     score = score + 10;
-  //     // Generate new food location
-  //   } else {
-  //     // Remove the last part of snake body
-  //     snake.pop();
-  //   }
-  // }
-
-  const moveSnake = () => {
-    const head = {
-      x: gameState.snake[0].x + dx,
-      y: gameState.snake[0].y + dy,
-    };
-    gameState.snake = [head, ...gameState.snake.slice(0, -1)];
-  };
-
-  function hasGameEnded() {
-    for (let i = 4; i < snake.length; i++) {
-      if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
-    }
-    const hitLeftWall = snake[0].x < 0;
-    const hitRightWall = snake[0].x > canvas.width - 10;
-    const hitToptWall = snake[0].y < 0;
-    const hitBottomWall = snake[0].y > canvas.height - 10;
-    return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall;
-  }
-
-  function random_food(min, max) {
-    return Math.round((Math.random() * (max - min) + min) / 10) * 10;
-  }
-
-  function gen_food() {
-    food_x = random_food(0, canvas.width - 10);
-    food_y = random_food(0, canvas.height - 10);
-    snake.forEach(function has_snake_eaten_food(part) {
-      const has_eaten = part.x == food_x && part.y == food_y;
-      if (has_eaten) gen_food();
-    });
-  }
-
-  function drawFood() {
-    context.fillStyle = "lightgreen";
-    context.strokestyle = "darkgreen";
-    context.fillRect(food_x, food_y, 10, 10);
-    context.strokeRect(food_x, food_y, 10, 10);
-  }
-
-  // const run = (canvas, context) => {
-  //   if (hasGameEnded()) return;
-
-  //   changinDirecion = false;
-  //   setTimeout(() => {
-  //     clearCanvas(canvas, context);
-  //     drawFood();
-  //     moveSnake();
-  //     drawSnake();
-  //     run(canvas, context);
-  //   }, gameSpeed);
-  // };
+  const isGameEnded = false;
 
   const run = () => {
-    let interval = setInterval(() => {
+    if (isGameEnded) return;
+    setTimeout(() => {
       moveSnake();
+      directionChange = false;
+      run();
     }, 1000 / gameConfig.fps);
-
-    // clearInterval(interval)
   };
 
   onMount(() => {
-    // document.addEventListener("keydown", change_direction);
     run();
-    // gen_food();
   });
 </script>
 
@@ -160,6 +124,7 @@
   <div class="wrapper">
     <div class="score">
       <p>Score: {score}</p>
+
       <p>High Score: 0</p>
     </div>
     <Canvas
@@ -167,14 +132,18 @@
       width={gameConfig.width}
       height={gameConfig.height}
       colors={gameConfig.colors}
-      {gameState}
+      {game}
     />
-    <button class="replay-button" type="button">Play again</button>
-    <p class="controls">
+    <Controls on:directionChange={handleDirectionChange} on:restart={reset} />
+    <div class="controls" />
+    <p class="controls__text">
       Move with <span class="key">w</span>
-      <span class="key">a</span>
-      <span class="key">s</span>
-      <span class="key">d</span> or <span class="key">arrow keys</span>
+      <span class="key">A</span>
+      <span class="key">S</span>
+      <span class="key">D</span> or <span class="key">ARROW KEYS</span>
+    </p>
+    <p class="controls__text">
+      Restart with <span class="key">R</span>
     </p>
   </div>
 </main>
@@ -197,10 +166,20 @@
 
   p {
     color: var(--color-light);
+    text-align: center;
     font-size: 1.5rem;
   }
 
-  .replay-button {
+  .controls__text {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .controls__text:last-of-type {
+    margin: 0;
+  }
+
+  /* button {
     margin: 1.5rem 0;
     background-color: var(--color-blue);
     border: none;
@@ -209,11 +188,11 @@
     padding: 1rem;
   }
 
-  .replay-button:hover,
-  .replay-button:focus {
+  button:hover,
+  button:focus {
     outline: 2px solid var(--color-light);
     outline-offset: -6px;
-  }
+  } */
 
   .wrapper {
     display: flex;
@@ -233,10 +212,11 @@
     outline: 1px solid var(--color-light);
     outline-offset: -4px;
     padding: 5px 10px;
+    font-size: 1rem;
   }
 
   .controls {
-    text-align: center;
-    font-size: 1.2rem;
+    display: flex;
+    gap: 1rem;
   }
 </style>

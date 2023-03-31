@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
 
     export let colors;
-    export let gameState;
+    export let game;
     export let width;
     export let height;
     export let canvas;
@@ -16,7 +16,7 @@
     };
 
     const drawSnake = () => {
-        gameState.snake.forEach((part) => {
+        game.snake.forEach((part) => {
             drawPart(part);
         });
     };
@@ -33,7 +33,7 @@
         drawSnake(); // Draw new frame
     };
 
-    $: if (context && gameState) {
+    $: if (context && game) {
         updateCanvas();
     }
 
@@ -48,5 +48,6 @@
 <style>
     canvas {
         border: 4px solid var(--color-blue);
+        margin-bottom: 1.5rem;
     }
 </style>
