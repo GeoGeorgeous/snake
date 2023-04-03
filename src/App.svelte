@@ -292,7 +292,7 @@
 
   .main {
     background-color: var(--color-green);
-    height: 100vh;
+    min-height: 100vh;
     display: grid;
     place-items: center center;
   }
@@ -303,7 +303,7 @@
 
   .effects.main::after {
     box-shadow: inset 0 0 10em rgba(0, 0, 0, 0.75);
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -380,7 +380,7 @@
   .effects::before {
     content: " ";
     display: block;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
