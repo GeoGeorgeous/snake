@@ -10,7 +10,7 @@
   let canvas;
   let hasGameEnded = false;
   let runtime;
-  let effects = false;
+  let effects = true;
 
   let snake = [
     { x: 200, y: 210 },
@@ -233,7 +233,7 @@
     --color-blue: #203e4a;
     --color-light: #4e94b0;
     --color-accent: #90ee90;
-    font-family: monospace;
+    font-family: "VT323", monospace;
     line-height: 1rem;
     filter: blur(0.007em);
   }
@@ -265,7 +265,7 @@
   }
 
   p {
-    font-family: monospace;
+    font-family: "VT323", monospace;
     color: var(--color-light);
     text-align: center;
     font-size: 1.5rem;
@@ -293,8 +293,7 @@
     outline: 1px solid var(--color-light);
     outline-offset: -4px;
     padding: 5px 10px;
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.1rem;
   }
 
   .colored {
@@ -304,7 +303,7 @@
   .controls {
     display: flex;
     gap: 2rem;
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-family: monospace;
     color: var(--color-light);
     justify-content: space-between;

@@ -4,7 +4,6 @@
 
     const handleKeydown = (event) => {
         let code = event.keyCode;
-        console.log(code);
         let direction = "";
 
         if (code === 82) dispatch("restart");
