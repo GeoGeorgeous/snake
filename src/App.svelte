@@ -11,16 +11,16 @@
   let hasGameEnded = false;
   let runtime;
 
-  let game = {
-    snake: [
-      { x: 200, y: 210 },
-      { x: 190, y: 210 },
-      { x: 180, y: 210 },
-      { x: 170, y: 210 },
-      { x: 160, y: 210 },
-    ],
-    food: {},
-  };
+  let snake = [
+    { x: 200, y: 210 },
+    { x: 190, y: 210 },
+    { x: 180, y: 210 },
+    { x: 170, y: 210 },
+    { x: 160, y: 210 },
+  ];
+
+  let food = {};
+
   let direction = "right";
   let directionChange = false;
   let score = 0;
@@ -65,12 +65,14 @@
 
   const moveSnake = () => {
     const head = {
-      x: game.snake[0].x + dx,
-      y: game.snake[0].y + dy,
+      x: snake[0].x + dx,
+      y: snake[0].y + dy,
     };
-    game.snake = [head, ...game.snake.slice(0, -1)];
-    const hasEaten =
-      game.snake[0].x === game.food.x && game.snake[0].y === game.food.y;
+    snake = [head, ...snake.slice(0, -1)];
+    const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
+    if (hasEaten) console.log("HAS EATEN");
+    if (!hasEaten)
+      console.log("NOT EATEN", snake[0].x, food.x, snake[0].y, food.y);
     if (hasEaten) generateFood();
   };
 
@@ -79,25 +81,25 @@
   }
 
   function generateFood() {
-    game.food.x = randomFood(0, gameConfig.width - 10);
-    game.food.y = randomFood(0, gameConfig.height - 10);
-    game.snake.forEach(function hasSnakeEatenFood(part) {
-      const hasEaten = part.x == game.food.x && part.y == game.food.y;
-      if (hasEaten) generateFood();
+    food.x = randomFood(0, gameConfig.width - 10);
+    food.y = randomFood(0, gameConfig.height - 10);
+    snake.forEach((part) => {
+      const foodCollapse = part.x == food.x && part.y == food.y;
+      if (foodCollapse) generateFood();
     });
   }
 
   const reset = () => {
     clearTimeout(runtime);
     // Reset all the game states
-    game.snake = [
+    snake = [
       { x: 200, y: 210 },
       { x: 190, y: 210 },
       { x: 180, y: 210 },
       { x: 170, y: 210 },
       { x: 160, y: 210 },
     ];
-    game.food = {};
+    food = {};
     directionChange = false;
     direction = "right";
     score = 0;
@@ -127,17 +129,13 @@
   }
 
   const checkGameStatus = () => {
-    for (let i = 4; i < game.snake.length; i++) {
-      if (
-        game.snake[i].x === game.snake[0].x &&
-        game.snake[i].y === game.snake[0].y
-      )
-        return true;
+    for (let i = 4; i < snake.length; i++) {
+      if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
     }
-    const hitLeftWall = game.snake[0].x <= 0;
-    const hitRightWall = game.snake[0].x + 10 >= gameConfig.width;
-    const hitTopWall = game.snake[0].y <= 0;
-    const hitBottomWall = game.snake[0].y + 10 >= gameConfig.height;
+    const hitLeftWall = snake[0].x <= 0;
+    const hitRightWall = snake[0].x + 10 >= gameConfig.width;
+    const hitTopWall = snake[0].y <= 0;
+    const hitBottomWall = snake[0].y + 10 >= gameConfig.height;
     hasGameEnded = hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
   };
 
@@ -170,7 +168,8 @@
       height={gameConfig.height}
       colors={gameConfig.colors}
       {hasGameEnded}
-      {game}
+      {snake}
+      {food}
     />
     <Controls on:directionChange={handleDirectionChange} on:restart={reset} />
     <div class="controls" />

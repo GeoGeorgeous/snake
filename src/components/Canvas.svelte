@@ -1,12 +1,14 @@
 <script>
     import { onMount } from "svelte";
+    export let snake;
+    export let food;
 
     export let colors;
-    export let game;
     export let width;
     export let height;
     export let canvas;
     export let hasGameEnded;
+
     let context;
 
     const drawPart = (part) => {
@@ -17,15 +19,15 @@
     };
 
     const drawSnake = () => {
-        game.snake.forEach((part) => {
+        snake.forEach((part) => {
             drawPart(part);
         });
     };
 
     const drawFood = () => {
-        console.log(game.food.x, game.food.y);
+        // console.log(food.x, food.y);
         context.fillStyle = colors.fruit;
-        context.fillRect(game.food.x, game.food.x, 10, 10);
+        context.fillRect(food.x, food.y, 10, 10);
     };
 
     const clearCanvas = () => {
@@ -37,17 +39,18 @@
 
     const updateCanvas = () => {
         clearCanvas();
-        if (game.food) drawFood();
+        if (food) drawFood();
         drawSnake();
     };
 
-    $: if (context && game) {
+    $: if (context && snake && food) {
+        console.log("food: ", food);
+        console.log("snake: ", snake[0]);
         updateCanvas();
     }
 
     onMount(() => {
         context = canvas.getContext("2d");
-        updateCanvas();
     });
 </script>
 
