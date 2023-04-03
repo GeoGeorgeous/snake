@@ -39,9 +39,10 @@
     const difficulty = [
       { speed: 6, multiplier: 0.25 },
       { speed: 12, multiplier: 0.5 },
+      { speed: 18, multiplier: 0.75 },
       { speed: 25, multiplier: 1 },
-      { speed: 40, multiplier: 2 },
-      { speed: 60, multiplier: 4 },
+      { speed: 40, multiplier: 1.25 },
+      { speed: 60, multiplier: 2 },
     ];
 
     fps = difficulty[mode].speed;
@@ -120,7 +121,7 @@
     snake.unshift(head);
     const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
     if (hasEaten) {
-      score = (score + 10) * multiplier;
+      score = Math.round((score + 10) * multiplier);
       generateFood();
     } else {
       snake.pop();
@@ -197,7 +198,6 @@
 <main class="main" class:effects>
   <div class="wrapper">
     <div class="score">
-      <p>Difficulty: <span class="colored">{multiplier}</span></p>
       <p>Score: <span class:colored={score > 0}>{score}</span></p>
       <p>High Score: {highScore}</p>
     </div>
@@ -245,8 +245,13 @@
           <span class="key">R</span> Restart
         </li>
         <li>
-          <span class="key">T</span> Change Speed:
-          <span class="colored">{fps}</span>
+          <span class="key">T</span> Toggle difficulty
+        </li>
+        <li>
+          Speed:
+          <span class="colored">{fps.toString().padStart(2, "0")}</span> /
+          Modifier:
+          <span class="colored">{multiplier.toFixed(2)}</span>
         </li>
       </ul>
     </div>
