@@ -11,6 +11,7 @@
   let hasGameEnded = false;
   let runtime;
   let effects = true;
+  let controlsShown = false;
 
   let snake = [
     { x: 200, y: 200 },
@@ -200,59 +201,74 @@
       <p>Score: <span class:colored={score > 0}>{score}</span></p>
       <p>High Score: {highScore}</p>
     </div>
+    <div class="canvas-wrapper">
+      <Canvas
+        bind:canvas
+        width={gameConfig.width}
+        height={gameConfig.height}
+        colors={gameConfig.colors}
+        {effects}
+        {hasGameEnded}
+        {snake}
+        {food}
+      />
+      <Controls
+        on:directionChange={handleDirectionChange}
+        on:restart={reset}
+        on:toggleEffects={() => (effects = !effects)}
+        on:speedChange={handleSpeedChange}
+        on:toggleControls={() => (controlsShown = !controlsShown)}
+      />
 
-    <Canvas
-      bind:canvas
-      width={gameConfig.width}
-      height={gameConfig.height}
-      colors={gameConfig.colors}
-      {effects}
-      {hasGameEnded}
-      {snake}
-      {food}
-    />
-    <Controls
-      on:directionChange={handleDirectionChange}
-      on:restart={reset}
-      on:toggleEffects={() => (effects = !effects)}
-      on:speedChange={handleSpeedChange}
-    />
-
-    <div class="controls">
-      <ul>
-        <li>
-          <span class="key">W</span> <span class="key">&#8593;</span> Move up
-        </li>
-        <li>
-          <span class="key">A</span> <span class="key">&#8594;</span> Move right
-        </li>
-        <li>
-          <span class="key">S</span> <span class="key">&#8595;</span> Move down
-        </li>
-        <li>
-          <span class="key">D</span> <span class="key">&#8592;</span> Move left
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <span class="key">E</span> Effects
-          <span class:colored={effects}>[On]</span>
-          /
-          <span class:colored={!effects}>[Off]</span>
-        </li>
-        <li>
-          <span class="key">R</span> Restart
-        </li>
-        <li>
-          <span class="key">T</span> Toggle difficulty
-        </li>
-        <li>
-          Speed:
-          <span class="colored">{fps.toString().padStart(2, "0")}</span> /
-          Modifier:
-          <span class="colored">{multiplier.toFixed(2)}</span>
-        </li>
-      </ul>
+      {#if controlsShown}
+        <div class="controls">
+          <ul>
+            <li>
+              <span class="key">W</span> <span class="key">&#8593;</span> Move up
+            </li>
+            <li>
+              <span class="key">A</span> <span class="key">&#8594;</span> Move right
+            </li>
+            <li>
+              <span class="key">S</span> <span class="key">&#8595;</span> Move down
+            </li>
+            <li>
+              <span class="key">D</span> <span class="key">&#8592;</span> Move left
+            </li>
+            <li>
+              <span class="key">H</span> Hide Controls
+            </li>
+          </ul>
+          <ul>
+            <li>
+              <span class="key">E</span> Effects
+              <span class:colored={effects}>[On]</span>
+              <span class:colored={!effects}>[Off]</span>
+            </li>
+            <li>
+              <span class="key">R</span> Restart
+            </li>
+            <li>
+              <span class="key">T</span> Toggle difficulty
+            </li>
+            <li>
+              Speed:
+              <span class="colored">{fps.toString().padStart(2, "0")}</span><br
+              />
+              Modifier:
+              <span class="colored">{multiplier.toFixed(2)}</span>
+            </li>
+          </ul>
+        </div>
+      {:else}
+        <div class="controls">
+          <ul>
+            <li>
+              <span class="key">H</span> Show controls
+            </li>
+          </ul>
+        </div>
+      {/if}
     </div>
   </div>
 </main>
@@ -266,6 +282,7 @@
     font-family: "VT323", monospace;
     line-height: 1rem;
     filter: blur(0.007em);
+    color: var(--color-blue);
   }
 
   .main {
@@ -330,9 +347,15 @@
     color: var(--color-accent);
   }
 
+  .canvas-wrapper {
+    position: relative;
+  }
+
   .controls {
-    display: flex;
-    gap: 2rem;
+    position: absolute;
+    display: grid;
+    gap: 0;
+    grid-template-columns: 1fr 1fr;
     font-size: 1rem;
     font-family: monospace;
     color: var(--color-light);

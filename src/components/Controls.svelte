@@ -5,10 +5,11 @@
     const handleKeydown = (event) => {
         let code = event.keyCode;
         let direction = "";
+        console.log(code);
 
         if (code === 82) dispatch("restart");
         if (code === 69) dispatch("toggleEffects");
-        if (code === 84) dispatch("speedChange");
+        if (code === 72) dispatch("toggleControls");
 
         switch (code) {
             case 87:
