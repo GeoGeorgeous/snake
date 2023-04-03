@@ -37,6 +37,7 @@
   };
 
   const handleSpeedChange = () => {
+    console.log("!");
     const difficulty = [
       { speed: 6, multiplier: 0.25 },
       { speed: 12, multiplier: 0.5 },
