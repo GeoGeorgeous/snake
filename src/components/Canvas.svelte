@@ -25,7 +25,6 @@
     };
 
     const drawFood = () => {
-        // console.log(food.x, food.y);
         context.fillStyle = colors.fruit;
         context.fillRect(food.x, food.y, 10, 10);
     };

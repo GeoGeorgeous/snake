@@ -70,24 +70,24 @@
     };
     snake = [head, ...snake.slice(0, -1)];
     const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
-    if (hasEaten) console.log("HAS EATEN");
-    if (!hasEaten)
-      console.log("NOT EATEN", snake[0].x, food.x, snake[0].y, food.y);
-    if (hasEaten) generateFood();
+    if (hasEaten) {
+      score = score + 1;
+      generateFood();
+    }
   };
 
-  function randomFood(min, max) {
+  const randomFood = (min, max) => {
     return Math.round((Math.random() * (max - min) + min) / 10) * 10;
-  }
+  };
 
-  function generateFood() {
+  const generateFood = () => {
     food.x = randomFood(0, gameConfig.width - 10);
     food.y = randomFood(0, gameConfig.height - 10);
     snake.forEach((part) => {
       const foodCollapse = part.x == food.x && part.y == food.y;
       if (foodCollapse) generateFood();
     });
-  }
+  };
 
   const reset = () => {
     clearTimeout(runtime);
