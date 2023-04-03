@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     export let snake;
     export let food;
+    export let effects = true;
 
     export let colors;
     export let width;
@@ -51,11 +52,47 @@
     });
 </script>
 
-<canvas {height} {width} id="gameCanvas" bind:this={canvas} />
+<canvas
+    class:canvasEffects={effects}
+    {height}
+    {width}
+    class="canvasBlur"
+    id="gameCanvas"
+    bind:this={canvas}
+/>
 
 <style>
     canvas {
         border: 4px solid var(--color-blue);
         margin-bottom: 1.5rem;
+    }
+
+    .canvasEffects {
+        animation: canvasEff 3s infinite;
+    }
+
+    @keyframes canvasEff {
+        0% {
+            filter: blur(0.007em);
+            opacity: 0.96019;
+        }
+        25% {
+            filter: blur(0.017em);
+            opacity: 0.64019;
+        }
+
+        50% {
+            filter: blur(0.024em);
+            opacity: 0.92019;
+        }
+        75% {
+            filter: blur(0em);
+            opacity: 0.561019;
+        }
+
+        100% {
+            filter: blur(0.015em);
+            opacity: 1;
+        }
     }
 </style>

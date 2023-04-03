@@ -10,6 +10,7 @@
   let canvas;
   let hasGameEnded = false;
   let runtime;
+  let effects = false;
 
   let snake = [
     { x: 200, y: 210 },
@@ -19,6 +20,7 @@
   ];
 
   let food = {};
+  let fps = 25; // frames per second (canvas update)
 
   let direction = "right";
   let directionChange = false;
@@ -156,7 +158,7 @@
       moveSnake();
       directionChange = false;
       run();
-    }, 1000 / gameConfig.fps);
+    }, 1000 / fps);
   };
 
   onMount(() => {
@@ -172,33 +174,56 @@
   onDestroy(() => clearTimeout(runtime));
 </script>
 
-<main class="main">
+<main class="main" class:effects>
   <div class="wrapper">
     <div class="score">
-      <p>Score: {score}</p>
-
+      <p>Score: <span class:colored={score > 0}>{score}</span></p>
       <p>High Score: {highScore}</p>
     </div>
+
     <Canvas
       bind:canvas
       width={gameConfig.width}
       height={gameConfig.height}
       colors={gameConfig.colors}
+      {effects}
       {hasGameEnded}
       {snake}
       {food}
     />
-    <Controls on:directionChange={handleDirectionChange} on:restart={reset} />
-    <div class="controls" />
-    <p class="controls__text">
-      Move with <span class="key">W</span>
-      <span class="key">A</span>
-      <span class="key">S</span>
-      <span class="key">D</span> or <span class="key">ARROW KEYS</span>
-    </p>
-    <p class="controls__text">
-      Restart with <span class="key">R</span>
-    </p>
+    <Controls
+      on:directionChange={handleDirectionChange}
+      on:restart={reset}
+      on:toggleEffects={() => (effects = !effects)}
+    />
+
+    <div class="controls">
+      <ul>
+        <li>
+          <span class="key">W</span> <span class="key">&#8593;</span> Move up
+        </li>
+        <li>
+          <span class="key">A</span> <span class="key">&#8594;</span> Move right
+        </li>
+        <li>
+          <span class="key">S</span> <span class="key">&#8595;</span> Move down
+        </li>
+        <li>
+          <span class="key">D</span> <span class="key">&#8592;</span> Move left
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <span class="key">E</span> Effects
+          <span class:colored={effects}>[On]</span>
+          /
+          <span class:colored={!effects}>[Off]</span>
+        </li>
+        <li>
+          <span class="key">R</span> Restart
+        </li>
+      </ul>
+    </div>
   </div>
 </main>
 
@@ -207,8 +232,10 @@
     --color-green: #112222;
     --color-blue: #203e4a;
     --color-light: #4e94b0;
+    --color-accent: #90ee90;
     font-family: monospace;
     line-height: 1rem;
+    filter: blur(0.007em);
   }
 
   .main {
@@ -218,6 +245,25 @@
     place-items: center center;
   }
 
+  .effects.main {
+    animation: bg 5ms infinite;
+  }
+
+  .effects.main::after {
+    box-shadow: inset 0 0 10em rgba(0, 0, 0, 0.75);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    content: "";
+  }
+
+  li {
+    margin-bottom: 1rem;
+  }
+
   p {
     font-family: monospace;
     color: var(--color-light);
@@ -225,29 +271,9 @@
     font-size: 1.5rem;
   }
 
-  .controls__text {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
+  .effects p {
+    animation: blur 1s infinite alternate;
   }
-
-  .controls__text:last-of-type {
-    margin: 0;
-  }
-
-  /* button {
-    margin: 1.5rem 0;
-    background-color: var(--color-blue);
-    border: none;
-    font-size: 1.5rem;
-    color: var(--color-light);
-    padding: 1rem;
-  }
-
-  button:hover,
-  button:focus {
-    outline: 2px solid var(--color-light);
-    outline-offset: -6px;
-  } */
 
   .wrapper {
     display: flex;
@@ -271,8 +297,143 @@
     font-weight: bold;
   }
 
+  .colored {
+    color: var(--color-accent);
+  }
+
   .controls {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
+    font-size: 1.15rem;
+    font-family: monospace;
+    color: var(--color-light);
+    justify-content: space-between;
+  }
+
+  /* crt */
+  .effects::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.06),
+        rgba(0, 255, 0, 0.02),
+        rgba(0, 0, 255, 0.06)
+      );
+    z-index: 2;
+    background-size: 100% 4px, 3px 100%;
+    animation: flicker 0.15s infinite, moveAnim 0.02s infinite linear;
+    pointer-events: none;
+  }
+
+  @keyframes moveAnim {
+    100% {
+      top: 4px;
+    }
+  }
+
+  @keyframes blur {
+    0% {
+      filter: blur(0.007em);
+    }
+    25% {
+      filter: blur(0.021em);
+    }
+    100% {
+      filter: blur(0.057em);
+    }
+  }
+
+  @keyframes bg {
+    28% {
+      background: #112222;
+    }
+    30% {
+      background: rgba(#112222, 0.95);
+    }
+    33% {
+      background: #112222;
+    }
+    34% {
+      background: rgba(#112222, 0.9);
+    }
+    35% {
+      background: #112222;
+    }
+  }
+
+  @keyframes flicker {
+    0% {
+      opacity: 0.27861;
+    }
+    5% {
+      opacity: 0.34769;
+    }
+    10% {
+      opacity: 0.23604;
+    }
+    15% {
+      opacity: 0.90626;
+    }
+    20% {
+      opacity: 0.18128;
+    }
+    25% {
+      opacity: 0.83891;
+    }
+    30% {
+      opacity: 0.65583;
+    }
+    35% {
+      opacity: 0.67807;
+    }
+    40% {
+      opacity: 0.26559;
+    }
+    45% {
+      opacity: 0.84693;
+    }
+    50% {
+      opacity: 0.96019;
+    }
+    55% {
+      opacity: 0.08594;
+    }
+    60% {
+      opacity: 0.20313;
+    }
+    65% {
+      opacity: 0.71988;
+    }
+    70% {
+      opacity: 0.53455;
+    }
+    75% {
+      opacity: 0.37288;
+    }
+    80% {
+      opacity: 0.71428;
+    }
+    85% {
+      opacity: 0.70419;
+    }
+    90% {
+      opacity: 0.7003;
+    }
+    95% {
+      opacity: 0.36108;
+    }
+    100% {
+      opacity: 0.24387;
+    }
   }
 </style>
