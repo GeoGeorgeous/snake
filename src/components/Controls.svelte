@@ -36,4 +36,4 @@
     };
 </script>
 
-<svelte:window on:keydown|preventDefault={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} />
