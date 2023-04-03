@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   // @ts-nocheck
 
@@ -95,14 +95,15 @@
       x: snake[0].x + dx,
       y: snake[0].y + dy,
     };
+    snake.unshift(head);
     const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
     if (hasEaten) {
-      snake = [head, ...snake];
       score = score + 1;
       generateFood();
     } else {
-      snake = [head, ...snake.slice(0, -1)];
+      snake.pop();
     }
+    snake = snake;
   };
 
   const randomFood = (min, max) => {
@@ -167,6 +168,8 @@
     generateFood();
     run();
   });
+
+  onDestroy(() => clearTimeout(runtime));
 </script>
 
 <main class="main">
