@@ -16,10 +16,6 @@
     { x: 190, y: 210 },
     { x: 180, y: 210 },
     { x: 170, y: 210 },
-    { x: 160, y: 210 },
-    { x: 150, y: 210 },
-    { x: 140, y: 210 },
-    { x: 130, y: 210 },
   ];
 
   let food = {};
@@ -130,15 +126,12 @@
       { x: 190, y: 210 },
       { x: 180, y: 210 },
       { x: 170, y: 210 },
-      { x: 160, y: 210 },
-      { x: 170, y: 210 },
-      { x: 180, y: 210 },
-      { x: 190, y: 210 },
     ];
     food = {};
-    directionChange = false;
     direction = "right";
+    directionChange = false;
     score = 0;
+    generateFood();
     run();
   };
 
