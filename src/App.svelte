@@ -17,6 +17,9 @@
     { x: 180, y: 210 },
     { x: 170, y: 210 },
     { x: 160, y: 210 },
+    { x: 150, y: 210 },
+    { x: 140, y: 210 },
+    { x: 130, y: 210 },
   ];
 
   let food = {};
@@ -27,6 +30,12 @@
   let dx;
   let dy;
 
+  const saveHighStore = (score) => {
+    localStorage.setItem("snakeHighScore", score);
+  };
+
+  $: highScore = score > highScore ? score : highScore || 0;
+  $: if (highScore !== 0) saveHighStore(highScore);
   $: {
     if (direction === "left") {
       dx = -10;
@@ -122,6 +131,9 @@
       { x: 180, y: 210 },
       { x: 170, y: 210 },
       { x: 160, y: 210 },
+      { x: 170, y: 210 },
+      { x: 180, y: 210 },
+      { x: 190, y: 210 },
     ];
     food = {};
     directionChange = false;
@@ -131,14 +143,16 @@
   };
 
   const checkGameStatus = () => {
-    for (let i = 4; i < snake.length; i++) {
-      if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
-    }
+    let selfEaten = snake
+      .slice(1)
+      .some((part) => part.x === snake[0].x && part.y === snake[0].y);
+
     const hitLeftWall = snake[0].x <= 0;
     const hitRightWall = snake[0].x + 10 >= gameConfig.width;
     const hitTopWall = snake[0].y <= 0;
     const hitBottomWall = snake[0].y + 10 >= gameConfig.height;
-    hasGameEnded = hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+    hasGameEnded =
+      selfEaten || hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
   };
 
   const run = () => {
@@ -152,6 +166,11 @@
   };
 
   onMount(() => {
+    const storedScore = localStorage.getItem("snakeHighScore");
+    if (storedScore) {
+      highScore = storedScore;
+    }
+
     generateFood();
     run();
   });
@@ -162,7 +181,7 @@
     <div class="score">
       <p>Score: {score}</p>
 
-      <p>High Score: 0</p>
+      <p>High Score: {highScore}</p>
     </div>
     <Canvas
       bind:canvas
