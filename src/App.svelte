@@ -120,7 +120,7 @@
     snake.unshift(head);
     const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
     if (hasEaten) {
-      score = Math.round((score + 10) * multiplier);
+      score = Math.round(score + 10 * multiplier);
       generateFood();
     } else {
       snake.pop();
