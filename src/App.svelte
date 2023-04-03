@@ -334,6 +334,7 @@
     flex-flow: column nowrap;
     position: relative;
     z-index: 1;
+    margin-bottom: 6rem;
   }
 
   .score {
@@ -370,6 +371,7 @@
     font-family: monospace;
     color: var(--color-light);
     justify-content: space-between;
+    white-space: nowrap;
   }
 
   .align-right {
