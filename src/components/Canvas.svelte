@@ -43,8 +43,6 @@
     };
 
     $: if (context && snake && food) {
-        console.log("food: ", food);
-        console.log("snake: ", snake[0]);
         updateCanvas();
     }
 

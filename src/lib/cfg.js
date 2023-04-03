@@ -1,7 +1,7 @@
   export const gameConfig = {
     width: 400, // canvas width
     height: 420, // canvas height
-    fps: 10, // frames per second (canvas update)
+    fps: 1, // frames per second (canvas update)
     colors: {
       bg: "#112222",
       main: "#203e4a",

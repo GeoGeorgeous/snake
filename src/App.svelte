@@ -27,6 +27,28 @@
   let dx;
   let dy;
 
+  $: {
+    if (direction === "left") {
+      dx = -10;
+      dy = 0;
+    }
+
+    if (direction === "up") {
+      dx = 0;
+      dy = -10;
+    }
+
+    if (direction === "right") {
+      dx = 10;
+      dy = 0;
+    }
+
+    if (direction === "down") {
+      dx = 0;
+      dy = 10;
+    }
+  }
+
   const handleDirectionChange = (event) => {
     if (directionChange) return;
 
@@ -71,6 +93,8 @@
     snake = [head, ...snake.slice(0, -1)];
     const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
     if (hasEaten) {
+      // growing the snake
+      snake = [head, ...snake];
       score = score + 1;
       generateFood();
     }
@@ -105,28 +129,6 @@
     score = 0;
     run();
   };
-
-  $: {
-    if (direction === "left") {
-      dx = -10;
-      dy = 0;
-    }
-
-    if (direction === "up") {
-      dx = 0;
-      dy = -10;
-    }
-
-    if (direction === "right") {
-      dx = 10;
-      dy = 0;
-    }
-
-    if (direction === "down") {
-      dx = 0;
-      dy = 10;
-    }
-  }
 
   const checkGameStatus = () => {
     for (let i = 4; i < snake.length; i++) {
