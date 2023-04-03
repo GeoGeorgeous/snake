@@ -13,10 +13,10 @@
   let effects = true;
 
   let snake = [
-    { x: 200, y: 210 },
-    { x: 190, y: 210 },
-    { x: 180, y: 210 },
-    { x: 170, y: 210 },
+    { x: 200, y: 200 },
+    { x: 190, y: 200 },
+    { x: 180, y: 200 },
+    { x: 170, y: 200 },
   ];
 
   let food = {};
@@ -37,11 +37,11 @@
 
   const handleSpeedChange = () => {
     const difficulty = [
-      { speed: 1, multiplier: 0.25 },
+      { speed: 6, multiplier: 0.25 },
       { speed: 12, multiplier: 0.5 },
       { speed: 18, multiplier: 0.75 },
-      { speed: 25, multiplier: 1 },
-      { speed: 40, multiplier: 1.25 },
+      { speed: 24, multiplier: 1 },
+      { speed: 32, multiplier: 1.25 },
       { speed: 60, multiplier: 2 },
     ];
 
