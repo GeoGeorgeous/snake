@@ -37,7 +37,7 @@
 
   const handleSpeedChange = () => {
     const difficulty = [
-      { speed: 6, multiplier: 0.25 },
+      { speed: 1, multiplier: 0.25 },
       { speed: 12, multiplier: 0.5 },
       { speed: 18, multiplier: 0.75 },
       { speed: 25, multiplier: 1 },
@@ -163,10 +163,10 @@
       .slice(1)
       .some((part) => part.x === snake[0].x && part.y === snake[0].y);
 
-    const hitLeftWall = snake[0].x <= 0;
-    const hitRightWall = snake[0].x + 10 >= gameConfig.width;
-    const hitTopWall = snake[0].y <= 0;
-    const hitBottomWall = snake[0].y + 10 >= gameConfig.height;
+    const hitLeftWall = snake[0].x < 0;
+    const hitRightWall = snake[0].x + 10 > gameConfig.width;
+    const hitTopWall = snake[0].y < 0;
+    const hitBottomWall = snake[0].y + 10 > gameConfig.height;
     hasGameEnded =
       selfEaten || hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
   };
