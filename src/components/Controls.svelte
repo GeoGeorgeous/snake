@@ -5,7 +5,6 @@
     const handleKeydown = (event) => {
         let code = event.keyCode;
         let direction = "";
-        console.log(code);
 
         if (code === 82) dispatch("restart");
         if (code === 69) dispatch("toggleEffects");

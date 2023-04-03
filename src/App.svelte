@@ -224,6 +224,9 @@
         <div class="controls">
           <ul>
             <li>
+              <span class="key">H</span> <span class="colored">Hide</span> Controls
+            </li>
+            <li>
               <span class="key">W</span> <span class="key">&#8593;</span> Move up
             </li>
             <li>
@@ -234,9 +237,6 @@
             </li>
             <li>
               <span class="key">D</span> <span class="key">&#8592;</span> Move left
-            </li>
-            <li>
-              <span class="key">H</span> Hide Controls
             </li>
           </ul>
           <ul>
@@ -264,7 +264,7 @@
         <div class="controls">
           <ul>
             <li>
-              <span class="key">H</span> Show controls
+              <span class="key">H</span> <span class="colored">Show</span> controls
             </li>
           </ul>
         </div>
