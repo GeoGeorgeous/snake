@@ -267,6 +267,9 @@
               <span class="key">H</span> <span class="colored">Show</span> controls
             </li>
           </ul>
+          <ul>
+            <li class="align-right">by Geo</li>
+          </ul>
         </div>
       {/if}
     </div>
@@ -315,10 +318,12 @@
     font-family: "VT323", monospace;
     color: var(--color-light);
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1rem;
+    font-family: monospace;
   }
 
-  .effects p {
+  .effects p,
+  .effects .controls {
     animation: blur 1s infinite alternate;
   }
 
@@ -326,6 +331,7 @@
     display: flex;
     flex-flow: column nowrap;
     position: relative;
+    z-index: 1;
   }
 
   .score {
@@ -352,6 +358,8 @@
   }
 
   .controls {
+    align-items: baseline;
+    width: 100%;
     position: absolute;
     display: grid;
     gap: 0;
@@ -360,6 +368,10 @@
     font-family: monospace;
     color: var(--color-light);
     justify-content: space-between;
+  }
+
+  .align-right {
+    text-align: right;
   }
 
   /* crt */
