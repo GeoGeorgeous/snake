@@ -47,7 +47,6 @@
 
     fps = difficulty[mode].speed;
     multiplier = difficulty[mode].multiplier;
-    console.log(mode);
     if (mode >= difficulty.length - 1) mode = 0;
     else mode = mode + 1;
     reset();
