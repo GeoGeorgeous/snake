@@ -283,6 +283,7 @@
     --color-blue: #203e4a;
     --color-light: #4e94b0;
     --color-accent: #90ee90;
+    background-color: var(--color-green);
     font-family: "VT323", monospace;
     line-height: 1rem;
     filter: blur(0.007em);
