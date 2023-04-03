@@ -20,7 +20,10 @@
   ];
 
   let food = {};
+
+  let mode = 0;
   let fps = 25; // frames per second (canvas update)
+  let multiplier = 1;
 
   let direction = "right";
   let directionChange = false;
@@ -30,6 +33,23 @@
 
   const saveHighStore = (score) => {
     localStorage.setItem("snakeHighScore", score);
+  };
+
+  const handleSpeedChange = () => {
+    const difficulty = [
+      { speed: 6, multiplier: 0.25 },
+      { speed: 12, multiplier: 0.5 },
+      { speed: 25, multiplier: 1 },
+      { speed: 40, multiplier: 2 },
+      { speed: 60, multiplier: 4 },
+    ];
+
+    fps = difficulty[mode].speed;
+    multiplier = difficulty[mode].multiplier;
+    console.log(mode);
+    if (mode >= difficulty.length - 1) mode = 0;
+    else mode = mode + 1;
+    reset();
   };
 
   $: highScore = score > highScore ? score : highScore || 0;
@@ -100,7 +120,7 @@
     snake.unshift(head);
     const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
     if (hasEaten) {
-      score = score + 1;
+      score = (score + 10) * multiplier;
       generateFood();
     } else {
       snake.pop();
@@ -177,6 +197,7 @@
 <main class="main" class:effects>
   <div class="wrapper">
     <div class="score">
+      <p>Difficulty: <span class="colored">{multiplier}</span></p>
       <p>Score: <span class:colored={score > 0}>{score}</span></p>
       <p>High Score: {highScore}</p>
     </div>
@@ -195,6 +216,7 @@
       on:directionChange={handleDirectionChange}
       on:restart={reset}
       on:toggleEffects={() => (effects = !effects)}
+      on:speedChange={handleSpeedChange}
     />
 
     <div class="controls">
@@ -221,6 +243,10 @@
         </li>
         <li>
           <span class="key">R</span> Restart
+        </li>
+        <li>
+          <span class="key">T</span> Change Speed:
+          <span class="colored">{fps}</span>
         </li>
       </ul>
     </div>

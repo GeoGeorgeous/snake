@@ -8,6 +8,7 @@
 
         if (code === 82) dispatch("restart");
         if (code === 69) dispatch("toggleEffects");
+        if (code === 84) dispatch("speedChange");
 
         switch (code) {
             case 87:
