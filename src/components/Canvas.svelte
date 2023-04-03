@@ -38,11 +38,11 @@
 
     const updateCanvas = () => {
         clearCanvas();
-        if (food) drawFood();
+        drawFood();
         drawSnake();
     };
 
-    $: if (context && snake && food) {
+    $: if (context && snake) {
         updateCanvas();
     }
 

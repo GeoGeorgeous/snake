@@ -95,13 +95,13 @@
       x: snake[0].x + dx,
       y: snake[0].y + dy,
     };
-    snake = [head, ...snake.slice(0, -1)];
     const hasEaten = snake[0].x === food.x && snake[0].y === food.y;
     if (hasEaten) {
-      // growing the snake
       snake = [head, ...snake];
       score = score + 1;
       generateFood();
+    } else {
+      snake = [head, ...snake.slice(0, -1)];
     }
   };
 
