@@ -22,7 +22,8 @@
 
   let food = {};
 
-  let mode = 0;
+  let mode = 0; // speed
+  let gameMode = "single"; // single or online
   let fps = 25; // frames per second (canvas update)
   let multiplier = 1;
 
@@ -52,6 +53,15 @@
     if (mode >= difficulty.length - 1) mode = 0;
     else mode = mode + 1;
     reset();
+  };
+
+  const changeGameMode = () => {
+    console.log("123");
+    if (gameMode === "single") {
+      gameMode = "online";
+    } else {
+      gameMode = "single";
+    }
   };
 
   $: highScore = score > highScore ? score : highScore || 0;
@@ -198,6 +208,9 @@
 
 <main class="main" class:effects>
   <div class="wrapper">
+    <div class="mode" class:mode-online={gameMode === "online"}>
+      <p>Mode: <span class:colored={gameMode === "online"}>{gameMode}</span></p>
+    </div>
     <div class="score">
       <p>Score: <span class:colored={score > 0}>{score}</span></p>
       <p>High Score: {highScore}</p>
@@ -219,6 +232,7 @@
         on:toggleEffects={() => (effects = !effects)}
         on:speedChange={handleSpeedChange}
         on:toggleControls={() => (controlsShown = !controlsShown)}
+        on:toggleGameMode={() => changeGameMode()}
       />
 
       {#if controlsShown}
@@ -238,6 +252,11 @@
             </li>
             <li>
               <span class="key">D</span> <span class="key">&#8592;</span> Move left
+            </li>
+            <li>
+              <span class="key">M</span> Mode:
+              <span class:colored={gameMode === "single"}>[s]</span>
+              <span class:colored={gameMode === "online"}>[o]</span>
             </li>
           </ul>
           <ul>
@@ -378,6 +397,22 @@
     text-align: right;
   }
 
+  .effects .mode {
+    animation: borderEff 3s infinite;
+  }
+
+  .mode {
+    text-align: left;
+    transition: border 3s ease-out, color 3s ease-out;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 0.2rem solid var(--color-blue);
+  }
+
+  .mode-online {
+    border-bottom: 0.2rem solid var(--color-accent);
+  }
+
   /* crt */
   .effects::before {
     content: " ";
@@ -502,6 +537,31 @@
     }
     100% {
       opacity: 0.24387;
+    }
+  }
+
+  @keyframes borderEff {
+    0% {
+      filter: blur(0.007em);
+      opacity: 0.96019;
+    }
+    25% {
+      filter: blur(0.017em);
+      opacity: 0.64019;
+    }
+
+    50% {
+      filter: blur(0.024em);
+      opacity: 0.92019;
+    }
+    75% {
+      filter: blur(0em);
+      opacity: 0.561019;
+    }
+
+    100% {
+      filter: blur(0.015em);
+      opacity: 1;
     }
   }
 </style>
