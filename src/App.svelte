@@ -1,5 +1,7 @@
 <script>
   import { onDestroy, onMount } from "svelte";
+  import io from "socket.io-client";
+  let socket = null;
 
   // @ts-nocheck
 
@@ -38,7 +40,6 @@
   };
 
   const handleSpeedChange = () => {
-    console.log("!");
     const difficulty = [
       { speed: 6, multiplier: 0.25 },
       { speed: 12, multiplier: 0.5 },
@@ -55,12 +56,26 @@
     reset();
   };
 
+  const handleGameState = (serverData) => {
+    serverData = JSON.parse(serverData);
+    snake = serverData;
+    moveSnake();
+  };
+
   const changeGameMode = () => {
-    console.log("123");
     if (gameMode === "single") {
-      gameMode = "online";
+      gameMode = "connecting...";
+      socket = io("ws://localhost:3000");
+      socket.on("connect", () => {
+        if (socket.connected) gameMode = "online";
+        reset();
+      });
+      socket.on("gameStateUpdate", handleGameState);
     } else {
+      gameMode = "disconnecting...";
+      socket.disconnect();
       gameMode = "single";
+      reset();
     }
   };
 
@@ -89,6 +104,9 @@
   }
 
   const handleDirectionChange = (event) => {
+    if (gameMode === "online") {
+      socket.emit("directionChange", event.detail);
+    }
     if (directionChange) return;
 
     directionChange = true;
@@ -96,29 +114,21 @@
       case "up":
         if (direction !== "down") {
           direction = "up";
-          dx = 0;
-          dy = -10;
         }
         break;
       case "right":
         if (direction !== "left") {
           direction = "right";
-          dx = 10;
-          dy = 0;
         }
         break;
       case "down":
         if (direction !== "up") {
           direction = "down";
-          dx = 0;
-          dy = 10;
         }
         break;
       case "left":
         if (direction !== "right") {
           direction = "left";
-          dx = -10;
-          dy = 0;
         }
         break;
     }
@@ -157,17 +167,20 @@
     clearTimeout(runtime);
     // Reset all the game states
     snake = [
-      { x: 200, y: 210 },
-      { x: 190, y: 210 },
-      { x: 180, y: 210 },
-      { x: 170, y: 210 },
+      { x: 200, y: 200 },
+      { x: 190, y: 200 },
+      { x: 180, y: 200 },
+      { x: 170, y: 200 },
     ];
     food = {};
     direction = "right";
     directionChange = false;
     score = 0;
-    generateFood();
-    run();
+    console.log(gameMode);
+    if (gameMode === "single") {
+      generateFood();
+      run();
+    }
   };
 
   const checkGameStatus = () => {
