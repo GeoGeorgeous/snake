@@ -44,6 +44,7 @@
     };
 
     $: if (context && snake) {
+        console.log(snake);
         updateCanvas();
     }
 
