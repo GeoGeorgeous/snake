@@ -59,7 +59,7 @@
   const handleGameState = (serverData) => {
     serverData = JSON.parse(serverData);
     snake = serverData;
-    moveSnake();
+    // moveSnake();
   };
 
   const changeGameMode = () => {
