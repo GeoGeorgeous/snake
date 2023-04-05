@@ -10,6 +10,7 @@
         if (code === 69) dispatch("toggleEffects");
         if (code === 84) dispatch("speedChange");
         if (code === 72) dispatch("toggleControls");
+        if (code === 77) dispatch("toggleGameMode");
 
         switch (code) {
             case 87:
