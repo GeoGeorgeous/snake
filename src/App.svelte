@@ -1,9 +1,7 @@
-<script>
+<script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import io from "socket.io-client";
   let socket = null;
-
-  // @ts-nocheck
 
   import Canvas from "./components/Canvas.svelte";
   import Controls from "./components/Controls.svelte";
